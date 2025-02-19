@@ -1,19 +1,19 @@
-package com.time_management.domain.models;
+package com.time_management.domain.dtos.reports;
 
-import com.time_management.domain.dtos.reports.SuggestionDTO;
+import com.time_management.domain.models.Task;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public class Report {
+public class ReportResponseDTO {
     private String id;
     private String description;
     private LocalDateTime issueDate;
     private SuggestionDTO suggestion;
     private List<Task> tasks;
 
-    public Report() {
+    public ReportResponseDTO() {
         this.id = UUID.randomUUID().toString();
     }
 
