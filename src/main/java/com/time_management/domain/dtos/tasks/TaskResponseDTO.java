@@ -1,20 +1,18 @@
-package com.time_management.domain.models;
+package com.time_management.domain.dtos.tasks;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-public class Task {
+public class TaskResponseDTO {
     private String id;
     private String email;
-    private LocalDateTime initialDate;
-    private LocalDateTime endTime;
     private String description;
-    private String role;
+    private LocalDateTime initialDate;
+    private LocalDateTime endDate;
     private String priority;
+    private String role;
     private String category;
 
-    public Task() {
-        this.id = UUID.randomUUID().toString();
+    public TaskResponseDTO() {
     }
 
     public String getId() {
@@ -33,22 +31,6 @@ public class Task {
         this.email = email;
     }
 
-    public LocalDateTime getInitialDate() {
-        return initialDate;
-    }
-
-    public void setInitialDate(LocalDateTime initialDate) {
-        this.initialDate = initialDate;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -57,12 +39,20 @@ public class Task {
         this.description = description;
     }
 
-    public String getRole() {
-        return role;
+    public LocalDateTime getInitialDate() {
+        return initialDate;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setInitialDate(LocalDateTime initialDate) {
+        this.initialDate = initialDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
     }
 
     public String getPriority() {
@@ -71,6 +61,14 @@ public class Task {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getCategory() {
