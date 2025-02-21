@@ -12,7 +12,18 @@ public class TaskResponseDTO {
     private String role;
     private String category;
 
-    public TaskResponseDTO() {
+    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endTime, String role) {
+    }
+
+    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String priority, String role, String category) {
+        this.id = id;
+        this.email = email;
+        this.description = description;
+        this.initialDate = initialDate;
+        this.endDate = endDate;
+        this.priority = priority;
+        this.role = role;
+        this.category = category;
     }
 
     public String getId() {
