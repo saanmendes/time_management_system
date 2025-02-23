@@ -1,6 +1,6 @@
 package com.time_management.infra.input.mappers;
 
-import com.time_management.domain.dtos.reports.ReportResponseDTO;
+import com.time_management.app.dtos.reports.ReportResponseDTO;
 import com.time_management.domain.models.Report;
 import com.time_management.infra.output.entities.ReportEntity;
 

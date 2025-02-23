@@ -1,8 +1,9 @@
 package com.time_management.domain.models;
 
-import com.time_management.domain.dtos.reports.SuggestionDTO;
+import com.time_management.app.dtos.reports.SuggestionDTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ public class Report {
 
     public Report() {
         this.id = UUID.randomUUID().toString();
+        this.tasks = new ArrayList<>();
     }
 
     public String getId() {

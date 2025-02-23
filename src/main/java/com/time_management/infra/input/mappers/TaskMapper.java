@@ -1,8 +1,8 @@
 package com.time_management.infra.input.mappers;
 
-import com.time_management.domain.dtos.tasks.TaskRequestDTO;
-import com.time_management.domain.dtos.tasks.TaskResponseDTO;
-import com.time_management.domain.dtos.tasks.TaskUpdateDTO;
+import com.time_management.app.dtos.tasks.TaskRequestDTO;
+import com.time_management.app.dtos.tasks.TaskResponseDTO;
+import com.time_management.app.dtos.tasks.TaskUpdateDTO;
 import com.time_management.domain.models.Task;
 import com.time_management.infra.output.entities.TaskEntity;
 
