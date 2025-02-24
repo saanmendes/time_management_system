@@ -29,4 +29,12 @@ public class ReportMapper {
         report.setDescription(reportEntity.getDescription());
         return report;
     }
+
+    public static ReportResponseDTO reportToReportResponseDTO(Report report) {
+        ReportResponseDTO reportResponseDTO = new ReportResponseDTO();
+        reportResponseDTO.setId(report.getId());
+        reportResponseDTO.setIssueDate(report.getIssueDate());
+        reportResponseDTO.setDescription(report.getDescription());
+        return reportResponseDTO;
+    }
 }
