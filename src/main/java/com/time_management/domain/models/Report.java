@@ -1,7 +1,5 @@
 package com.time_management.domain.models;
 
-import com.time_management.app.dtos.reports.SuggestionDTO;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +9,7 @@ public class Report {
     private String id;
     private String description;
     private LocalDateTime issueDate;
-    private SuggestionDTO suggestion;
+    private Suggestion suggestion;
     private List<Task> tasks;
 
     public Report() {
@@ -43,11 +41,11 @@ public class Report {
         this.issueDate = issueDate;
     }
 
-    public SuggestionDTO getSuggestion() {
+    public Suggestion getSuggestion() {
         return suggestion;
     }
 
-    public void setSuggestion(SuggestionDTO suggestion) {
+    public void setSuggestion(Suggestion suggestion) {
         this.suggestion = suggestion;
     }
 
