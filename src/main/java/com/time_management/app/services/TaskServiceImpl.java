@@ -10,6 +10,9 @@ import com.time_management.infra.output.entities.TaskEntity;
 import com.time_management.infra.output.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -37,5 +40,17 @@ public class TaskServiceImpl implements TaskService {
                 savedTask.getEndTime(),
                 savedTask.getRole()
         );
+    }
+
+    public List<Task> getAllTasks() {
+        List<TaskEntity> taskEntities = taskRepository.findAll();
+        return taskEntities.stream()
+                .map(taskEntity -> TaskMapper.taskEntityToTask(taskEntity))
+                .toList();
+    }
+
+    public Optional<Task> getTaskById(String id) {
+        Optional<TaskEntity> taskEntity = taskRepository.findById(id);
+        return taskEntity.map(TaskMapper::taskEntityToTask);
     }
 }

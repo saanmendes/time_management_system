@@ -1,7 +1,7 @@
 package com.time_management.infra.output.repositories;
 
+import com.time_management.domain.models.Report;
 import com.time_management.infra.output.entities.ReportEntity;
-import com.time_management.infra.output.entities.TaskEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
