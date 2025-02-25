@@ -12,6 +12,7 @@ public class Task {
     private String role;
     private String priority;
     private String category;
+    private boolean pending;
 
     public Task() {
         this.id = UUID.randomUUID().toString();
@@ -79,5 +80,13 @@ public class Task {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
     }
 }

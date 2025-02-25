@@ -8,6 +8,7 @@ public class TaskUpdateDTO {
     private LocalDateTime initialDate;
     private LocalDateTime endDate;
     private String role;
+    private boolean completed;
 
     public TaskUpdateDTO() {
     }
@@ -50,5 +51,13 @@ public class TaskUpdateDTO {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

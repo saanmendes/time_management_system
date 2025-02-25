@@ -1,7 +1,6 @@
 package com.time_management.infra.output.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
@@ -19,6 +18,7 @@ public class TaskEntity {
     private String role;
     private String priority;
     private String category;
+    private boolean completed;
 
     @ManyToOne
     @JoinColumn(name = "report_entity_id")
@@ -86,5 +86,13 @@ public class TaskEntity {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

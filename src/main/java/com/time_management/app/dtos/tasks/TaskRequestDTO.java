@@ -8,6 +8,7 @@ public class TaskRequestDTO {
     private LocalDateTime initialDate;
     private LocalDateTime endDate;
     private String role;
+    private boolean pending;
 
     public TaskRequestDTO() {
     }
@@ -50,5 +51,13 @@ public class TaskRequestDTO {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
     }
 }

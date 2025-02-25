@@ -40,7 +40,8 @@ public class TaskServiceImpl implements TaskService {
                 savedTask.getDescription(),
                 savedTask.getInitialDate(),
                 savedTask.getEndTime(),
-                savedTask.getRole()
+                savedTask.getRole(),
+                savedTask.isPending()
         );
     }
 
