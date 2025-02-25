@@ -1,5 +1,6 @@
 package com.time_management.app.services;
 
+import com.time_management.app.dtos.tasks.TaskUpdateDTO;
 import com.time_management.app.ports.TaskService;
 import com.time_management.app.dtos.tasks.TaskRequestDTO;
 import com.time_management.app.dtos.tasks.TaskResponseDTO;
@@ -56,4 +57,44 @@ public class TaskServiceImpl implements TaskService {
         Optional<TaskEntity> taskEntity = taskRepository.findById(id);
         return taskEntity.map(TaskMapper::taskEntityToTask);
     }
+
+    @Override
+    public TaskResponseDTO updateTask(String taskId, TaskUpdateDTO taskUpdateDTO) {
+        TaskEntity existingTaskEntity = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+
+        // Atualiza
+        existingTaskEntity.setEmail(taskUpdateDTO.getEmail());
+        existingTaskEntity.setDescription(taskUpdateDTO.getDescription());
+        existingTaskEntity.setRole(taskUpdateDTO.getRole());
+        existingTaskEntity.setInitialDate(taskUpdateDTO.getInitialDate());
+        existingTaskEntity.setEndDate(taskUpdateDTO.getEndDate());
+
+        // Salva
+        TaskEntity updatedTaskEntity = taskRepository.save(existingTaskEntity);
+        Task updatedTask = TaskMapper.taskEntityToTask(updatedTaskEntity);
+
+        // Atualiza no Report
+        report.getTasks().removeIf(task -> task.getId().equals(taskId));
+        report.getTasks().add(updatedTask);
+
+        return new TaskResponseDTO(
+                updatedTask.getId(),
+                updatedTask.getEmail(),
+                updatedTask.getDescription(),
+                updatedTask.getInitialDate(),
+                updatedTask.getEndTime(),
+                updatedTask.getRole()
+        );
+    }
+
+    @Override
+    public void deleteTask(String id) {
+        if (taskRepository.existsById(id)) {
+            taskRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Task not found");
+        }
+    }
+
 }

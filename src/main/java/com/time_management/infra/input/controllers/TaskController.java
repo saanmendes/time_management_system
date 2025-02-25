@@ -1,5 +1,6 @@
 package com.time_management.infra.input.controllers;
 
+import com.time_management.app.dtos.tasks.TaskUpdateDTO;
 import com.time_management.app.ports.TaskService;
 import com.time_management.app.dtos.tasks.TaskRequestDTO;
 import com.time_management.app.dtos.tasks.TaskResponseDTO;
@@ -36,6 +37,18 @@ public class TaskController {
         Optional<Task> task = taskService.getTaskById(id);
         return task.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTask(@PathVariable String id, @RequestBody TaskUpdateDTO taskUpdateDTO) {
+        TaskResponseDTO updatedTask = taskService.updateTask(id, taskUpdateDTO);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTask(@PathVariable String id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

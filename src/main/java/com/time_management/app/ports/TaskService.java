@@ -2,6 +2,7 @@ package com.time_management.app.ports;
 
 import com.time_management.app.dtos.tasks.TaskRequestDTO;
 import com.time_management.app.dtos.tasks.TaskResponseDTO;
+import com.time_management.app.dtos.tasks.TaskUpdateDTO;
 import com.time_management.domain.models.Task;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface TaskService {
     TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO);
     Optional<Task> getTaskById(String id);
     List<Task> getAllTasks();
+    TaskResponseDTO updateTask(String id, TaskUpdateDTO taskUpdateDTO);
+    void deleteTask(String id);
 }
