@@ -2,6 +2,7 @@ package com.time_management.infra.input.mappers;
 
 import com.time_management.app.dtos.reports.ReportResponseDTO;
 import com.time_management.domain.models.Report;
+import com.time_management.domain.models.Task;
 import com.time_management.infra.output.entities.ReportEntity;
 
 public class ReportMapper {
@@ -11,6 +12,7 @@ public class ReportMapper {
         reportResponseDTO.setId(reportEntity.getId());
         reportResponseDTO.setIssueDate(reportEntity.getIssueDate());
         reportResponseDTO.setDescription(reportEntity.getDescription());
+        reportResponseDTO.setTasks(TaskMapper.taskEntityToTaskList(reportEntity.getTaskEntities()));
         return reportResponseDTO;
     }
 
@@ -19,6 +21,7 @@ public class ReportMapper {
         reportEntity.setId(report.getId());
         reportEntity.setIssueDate(report.getIssueDate());
         reportEntity.setDescription(report.getDescription());
+        reportEntity.setTaskEntities(TaskMapper.taskToTaskEntityList(report.getTasks()));
         return reportEntity;
     }
 
@@ -35,6 +38,7 @@ public class ReportMapper {
         reportResponseDTO.setId(report.getId());
         reportResponseDTO.setIssueDate(report.getIssueDate());
         reportResponseDTO.setDescription(report.getDescription());
+        reportResponseDTO.setTasks(report.getTasks());
         return reportResponseDTO;
     }
 }
