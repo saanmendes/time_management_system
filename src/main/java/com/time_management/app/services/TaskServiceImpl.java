@@ -8,6 +8,7 @@ import com.time_management.domain.models.Task;
 import com.time_management.infra.input.mappers.TaskMapper;
 import com.time_management.infra.output.entities.TaskEntity;
 import com.time_management.infra.output.repositories.TaskRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
         TaskEntity savedTaskEntity = taskRepository.save(TaskMapper.taskRequestToTaskEntity(taskRequestDTO));
 

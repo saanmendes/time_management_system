@@ -1,7 +1,8 @@
 package com.time_management.domain.usecases;
 
 import com.time_management.app.dtos.reports.ReportResponseDTO;
+import com.time_management.domain.models.Report;
 
 public interface ReportUseCase {
-    ReportResponseDTO generateReport(int days);
+    Report generateReport(int days);
 }
