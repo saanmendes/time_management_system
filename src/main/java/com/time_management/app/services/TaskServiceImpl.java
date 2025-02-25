@@ -84,7 +84,8 @@ public class TaskServiceImpl implements TaskService {
                 updatedTask.getDescription(),
                 updatedTask.getInitialDate(),
                 updatedTask.getEndTime(),
-                updatedTask.getRole()
+                updatedTask.getRole(),
+                updatedTask.isPending()
         );
     }
 
