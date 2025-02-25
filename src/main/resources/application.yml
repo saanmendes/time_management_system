@@ -1,6 +1,6 @@
 spring:
   application:
-    name: time_management
+    name: task_management
   h2:
     console:
       enabled: true
