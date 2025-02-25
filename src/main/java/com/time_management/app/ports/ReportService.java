@@ -4,7 +4,4 @@ import com.time_management.app.dtos.reports.ReportResponseDTO;
 
 public interface ReportService {
     ReportResponseDTO generateReport(int days);
-
-
-    ReportResponseDTO generateReport(int days);
 }

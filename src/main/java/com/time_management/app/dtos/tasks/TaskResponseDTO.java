@@ -11,17 +11,19 @@ public class TaskResponseDTO {
     private String priority;
     private String role;
     private String category;
+    private boolean pending;
 
-    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String role) {
+    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String role, boolean pending) {
         this.id = id;
         this.email = email;
         this.description = description;
         this.initialDate = initialDate;
         this.endDate = endDate;
         this.role = role;
+        this.pending = pending;
     }
 
-    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String priority, String role, String category) {
+    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String priority, String role, String category, boolean pending) {
         this.id = id;
         this.email = email;
         this.description = description;
@@ -30,6 +32,7 @@ public class TaskResponseDTO {
         this.priority = priority;
         this.role = role;
         this.category = category;
+        this.pending = pending;
     }
 
     public String getId() {
@@ -94,5 +97,13 @@ public class TaskResponseDTO {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
     }
 }

@@ -21,6 +21,7 @@ public class TaskMapper {
         taskEntity.setInitialDate(task.getInitialDate());
         taskEntity.setEndDate(task.getEndTime());
         taskEntity.setEmail(task.getEmail());
+        taskEntity.setCompleted(taskEntity.isCompleted());
         return taskEntity;
     }
 
@@ -34,6 +35,7 @@ public class TaskMapper {
         task.setInitialDate(taskEntity.getInitialDate());
         task.setEndTime(taskEntity.getEndDate());
         task.setEmail(taskEntity.getEmail());
+        task.setPending(taskEntity.isCompleted());
         return task;
     }
 
@@ -44,6 +46,7 @@ public class TaskMapper {
         taskEntity.setRole(taskRequestDTO.getRole());
         taskEntity.setInitialDate(taskRequestDTO.getInitialDate());
         taskEntity.setEndDate(taskRequestDTO.getEndDate());
+        taskEntity.setCompleted(taskRequestDTO.isPending());
         return taskEntity;
     }
 
@@ -51,15 +54,15 @@ public class TaskMapper {
         return new TaskResponseDTO(task.getId(), task.getEmail(),
                 task.getDescription(), task.getInitialDate(),
                 task.getEndTime(), task.getPriority(),
-                task.getRole(), task.getCategory());
-
+                task.getRole(), task.getCategory(),
+                task.isPending());
     }
 
     public static TaskResponseDTO taskEntityToTaskResponseDTO(TaskEntity taskEntity) {
         return new TaskResponseDTO(taskEntity.getId(),
                 taskEntity.getEmail(), taskEntity.getRole(),
                 taskEntity.getInitialDate(), taskEntity.getEndDate(),
-                taskEntity.getPriority());
+                taskEntity.getPriority(), taskEntity.isCompleted());
     }
 
     public static TaskEntity taskUpdateToTaskEntity(TaskUpdateDTO taskUpdateDTO) {
@@ -69,6 +72,7 @@ public class TaskMapper {
         taskEntity.setRole(taskUpdateDTO.getRole());
         taskEntity.setInitialDate(taskUpdateDTO.getInitialDate());
         taskEntity.setEndDate(taskUpdateDTO.getEndDate());
+        taskEntity.setCompleted(taskUpdateDTO.isCompleted());
         return taskEntity;
     }
 
