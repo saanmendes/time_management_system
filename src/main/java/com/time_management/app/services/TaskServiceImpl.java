@@ -65,11 +65,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional
-    public List<Task> getAllTasks() {
+    public List<TaskResponseDTO> getAllTasks() {
         try {
             List<TaskEntity> taskEntities = taskRepository.findAll();
             return taskEntities.stream()
-                    .map(TaskMapper::taskEntityToTask)
+                    .map(TaskMapper::taskEntityToTaskResponseDTO)
                     .toList();
         } catch (DataAccessException exception) {
             logger.error("Error fetching all tasks: " + exception.getMessage(), exception);
@@ -78,13 +78,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional
-    public Optional<Task> getTaskById(String id) {
+    public TaskResponseDTO getTaskById(String id) {
         try {
-            Optional<TaskEntity> taskEntity = taskRepository.findById(id);
-            return taskEntity.map(TaskMapper::taskEntityToTask);
-        } catch (DataAccessException exception) {
+            TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(
+                    () -> new TaskNotFoundException("Task not found"));
+            return TaskMapper.taskEntityToTaskResponseDTO(taskEntity);
+        } catch (TaskNotFoundException exception) {
             logger.error("Error fetching task with ID {}: " + exception.getMessage(), id, exception);
-            throw new RuntimeException("Error while fetching the task with ID: " + id + ". " + exception.getMessage(), exception);
+            throw new TaskNotFoundException("Task not found");
         }
     }
 
