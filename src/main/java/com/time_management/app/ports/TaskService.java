@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface TaskService {
     TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO);
-    Optional<Task> getTaskById(String id);
-    List<Task> getAllTasks();
+    TaskResponseDTO getTaskById(String id);
+    List<TaskResponseDTO> getAllTasks();
     TaskResponseDTO updateTask(String id, TaskUpdateDTO taskUpdateDTO);
     void deleteTask(String id);
 }
