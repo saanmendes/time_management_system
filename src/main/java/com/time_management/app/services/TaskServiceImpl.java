@@ -10,6 +10,7 @@ import com.time_management.infra.input.mappers.TaskMapper;
 import com.time_management.infra.output.entities.TaskEntity;
 import com.time_management.infra.output.repositories.TaskRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,73 +30,92 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
-        TaskEntity savedTaskEntity = taskRepository.save(TaskMapper.taskRequestToTaskEntity(taskRequestDTO));
+        try {
+            TaskEntity savedTaskEntity = taskRepository.save(TaskMapper.taskRequestToTaskEntity(taskRequestDTO));
 
-        Task savedTask = TaskMapper.taskEntityToTask(savedTaskEntity);
+            Task savedTask = TaskMapper.taskEntityToTask(savedTaskEntity);
 
-        report.getTasks().add(savedTask);
+            report.getTasks().add(savedTask);
 
-        return new TaskResponseDTO(
-                savedTask.getId(),
-                savedTask.getEmail(),
-                savedTask.getDescription(),
-                savedTask.getInitialDate(),
-                savedTask.getEndTime(),
-                savedTask.getRole(),
-                savedTask.isPending()
-        );
+            return new TaskResponseDTO(
+                    savedTask.getId(),
+                    savedTask.getEmail(),
+                    savedTask.getDescription(),
+                    savedTask.getInitialDate(),
+                    savedTask.getEndTime(),
+                    savedTask.getRole(),
+                    savedTask.isPending()
+            );
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error while saving the task: " + e.getMessage(), e);
+        }
     }
 
     public List<Task> getAllTasks() {
-        List<TaskEntity> taskEntities = taskRepository.findAll();
-        return taskEntities.stream()
-                .map(taskEntity -> TaskMapper.taskEntityToTask(taskEntity))
-                .toList();
+        try {
+            List<TaskEntity> taskEntities = taskRepository.findAll();
+            return taskEntities.stream()
+                    .map(TaskMapper::taskEntityToTask)
+                    .toList();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error while fetching all tasks: " + e.getMessage(), e);
+        }
     }
 
     public Optional<Task> getTaskById(String id) {
-        Optional<TaskEntity> taskEntity = taskRepository.findById(id);
-        return taskEntity.map(TaskMapper::taskEntityToTask);
+        try {
+            Optional<TaskEntity> taskEntity = taskRepository.findById(id);
+            return taskEntity.map(TaskMapper::taskEntityToTask);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error while fetching the task with ID: " + id + ". " + e.getMessage(), e);
+        }
     }
 
     @Override
     public TaskResponseDTO updateTask(String taskId, TaskUpdateDTO taskUpdateDTO) {
-        TaskEntity existingTaskEntity = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+        try {
+            TaskEntity existingTaskEntity = taskRepository.findById(taskId)
+                    .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 
-        // Atualiza
-        existingTaskEntity.setEmail(taskUpdateDTO.getEmail());
-        existingTaskEntity.setDescription(taskUpdateDTO.getDescription());
-        existingTaskEntity.setRole(taskUpdateDTO.getRole());
-        existingTaskEntity.setInitialDate(taskUpdateDTO.getInitialDate());
-        existingTaskEntity.setEndDate(taskUpdateDTO.getEndDate());
+            // Atualiza
+            existingTaskEntity.setEmail(taskUpdateDTO.getEmail());
+            existingTaskEntity.setDescription(taskUpdateDTO.getDescription());
+            existingTaskEntity.setRole(taskUpdateDTO.getRole());
+            existingTaskEntity.setInitialDate(taskUpdateDTO.getInitialDate());
+            existingTaskEntity.setEndDate(taskUpdateDTO.getEndDate());
 
-        // Salva
-        TaskEntity updatedTaskEntity = taskRepository.save(existingTaskEntity);
-        Task updatedTask = TaskMapper.taskEntityToTask(updatedTaskEntity);
+            // Salva
+            TaskEntity updatedTaskEntity = taskRepository.save(existingTaskEntity);
+            Task updatedTask = TaskMapper.taskEntityToTask(updatedTaskEntity);
 
-        // Atualiza no Report
-        report.getTasks().removeIf(task -> task.getId().equals(taskId));
-        report.getTasks().add(updatedTask);
+            // Atualiza no Report
+            report.getTasks().removeIf(task -> task.getId().equals(taskId));
+            report.getTasks().add(updatedTask);
 
-        return new TaskResponseDTO(
-                updatedTask.getId(),
-                updatedTask.getEmail(),
-                updatedTask.getDescription(),
-                updatedTask.getInitialDate(),
-                updatedTask.getEndTime(),
-                updatedTask.getRole(),
-                updatedTask.isPending()
-        );
+            return new TaskResponseDTO(
+                    updatedTask.getId(),
+                    updatedTask.getEmail(),
+                    updatedTask.getDescription(),
+                    updatedTask.getInitialDate(),
+                    updatedTask.getEndTime(),
+                    updatedTask.getRole(),
+                    updatedTask.isPending()
+            );
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error while updating the task with ID: " + taskId + ". " + e.getMessage(), e);
+        }
     }
 
     @Override
     public void deleteTask(String id) {
-        if (taskRepository.existsById(id)) {
-            taskRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("Task not found");
+        try {
+            if (taskRepository.existsById(id)) {
+                taskRepository.deleteById(id);
+            } else {
+                throw new RuntimeException("Task not found with ID: " + id);
+            }
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error while deleting the task with ID: " + id + ". " + e.getMessage(), e);
         }
     }
-
 }
