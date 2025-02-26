@@ -51,6 +51,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Transactional
     public List<Task> getAllTasks() {
         try {
             List<TaskEntity> taskEntities = taskRepository.findAll();
@@ -62,6 +63,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Transactional
     public Optional<Task> getTaskById(String id) {
         try {
             Optional<TaskEntity> taskEntity = taskRepository.findById(id);
@@ -72,6 +74,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskResponseDTO updateTask(String taskId, TaskUpdateDTO taskUpdateDTO) {
         try {
             TaskEntity existingTaskEntity = taskRepository.findById(taskId)
@@ -107,6 +110,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void deleteTask(String id) {
         try {
             if (taskRepository.existsById(id)) {
