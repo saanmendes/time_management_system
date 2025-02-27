@@ -11,19 +11,19 @@ public class TaskResponseDTO {
     private String priority;
     private String role;
     private String category;
-    private boolean pending;
+    private boolean completed;
 
-    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String role, boolean pending) {
+    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String role, boolean completed) {
         this.id = id;
         this.email = email;
         this.description = description;
         this.initialDate = initialDate;
         this.endDate = endDate;
         this.role = role;
-        this.pending = pending;
+        this.completed = completed;
     }
 
-    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String priority, String role, String category, boolean pending) {
+    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String priority, String role, String category, boolean completed) {
         this.id = id;
         this.email = email;
         this.description = description;
@@ -32,7 +32,7 @@ public class TaskResponseDTO {
         this.priority = priority;
         this.role = role;
         this.category = category;
-        this.pending = pending;
+        this.completed = completed;
     }
 
     public String getId() {
@@ -99,11 +99,11 @@ public class TaskResponseDTO {
         this.category = category;
     }
 
-    public boolean isPending() {
-        return pending;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setPending(boolean pending) {
-        this.pending = pending;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }
