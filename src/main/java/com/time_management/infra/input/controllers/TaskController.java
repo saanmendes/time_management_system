@@ -45,6 +45,12 @@ public class TaskController {
         return ResponseEntity.ok(updatedTask);
     }
 
+    @PatchMapping("/{id}/pending")
+    public ResponseEntity<?> updateTaskPending(@PathVariable String id, @Valid @RequestBody TaskUpdateDTO taskUpdateDTO) {
+        TaskResponseDTO responseDTO = taskService.updateTaskPendingStatus(id, taskUpdateDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable String id) {
         taskService.deleteTask(id);

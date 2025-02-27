@@ -76,6 +76,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
     @Transactional
     public TaskResponseDTO getTaskById(String id) {
         try {
@@ -125,6 +126,42 @@ public class TaskServiceImpl implements TaskService {
             logger.info("Task updated successfully with ID: {}", updatedTask.getId());
             return responseDTO;
 
+        } catch (DataAccessException exception) {
+            logger.error("Error updating task with ID {}: " + exception.getMessage(), taskId, exception);
+            throw new TaskUpdateException("Error while updating the task with ID: " + taskId + ". " + exception.getMessage(), exception);
+        }
+    }
+
+    @Override
+    @Transactional
+    public TaskResponseDTO updateTaskPendingStatus(String taskId, TaskUpdateDTO taskUpdateDTO) {
+        try {
+            TaskEntity existingTaskEntity = taskRepository.findById(taskId)
+                    .orElseThrow(() -> {
+                        logger.warn("Task with ID {} not found", taskId);
+                        return new TaskNotFoundException("Task not found with ID: " + taskId);
+                    });
+
+            existingTaskEntity.setCompleted(taskUpdateDTO.isCompleted());
+
+            TaskEntity updatedTaskEntity = taskRepository.save(existingTaskEntity);
+            Task updatedTask = TaskMapper.taskEntityToTask(updatedTaskEntity);
+
+            report.getTasks().removeIf(task -> task.getId().equals(taskId));
+            report.getTasks().add(updatedTask);
+
+            TaskResponseDTO responseDTO = new TaskResponseDTO(
+                    updatedTask.getId(),
+                    updatedTask.getEmail(),
+                    updatedTask.getDescription(),
+                    updatedTask.getInitialDate(),
+                    updatedTask.getEndTime(),
+                    updatedTask.getRole(),
+                    updatedTask.isCompleted()
+            );
+
+            logger.info("Task updated successfully with ID: {}", updatedTask.getId());
+            return responseDTO;
         } catch (DataAccessException exception) {
             logger.error("Error updating task with ID {}: " + exception.getMessage(), taskId, exception);
             throw new TaskUpdateException("Error while updating the task with ID: " + taskId + ". " + exception.getMessage(), exception);
