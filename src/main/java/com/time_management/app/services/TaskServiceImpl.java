@@ -8,6 +8,8 @@ import com.time_management.app.exceptions.TaskUpdateException;
 import com.time_management.app.ports.TaskService;
 import com.time_management.app.dtos.tasks.TaskRequestDTO;
 import com.time_management.app.dtos.tasks.TaskResponseDTO;
+import com.time_management.app.services.stackspot.QuickCommandService;
+import com.time_management.app.services.stackspot.StackspotAuthenticator;
 import com.time_management.domain.models.Report;
 import com.time_management.domain.models.Task;
 import com.time_management.infra.input.mappers.TaskMapper;
@@ -26,11 +28,15 @@ public class TaskServiceImpl implements TaskService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceImpl.class);
 
+    private final StackspotAuthenticator stackspotAuthenticator;
     private final TaskRepository taskRepository;
+    private final QuickCommandService quickCommandService;
     private final Report report;
 
-    public TaskServiceImpl(TaskRepository taskRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, StackspotAuthenticator stackspotAuthenticator, QuickCommandService quickCommandService) {
+        this.stackspotAuthenticator = stackspotAuthenticator;
         this.taskRepository = taskRepository;
+        this.quickCommandService = quickCommandService;
         this.report = new Report();
     }
 
@@ -38,9 +44,19 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
         try {
-            TaskEntity savedTaskEntity = taskRepository.save(TaskMapper.taskRequestToTaskEntity(taskRequestDTO));
+            String token = stackspotAuthenticator.authenticate();
+            logger.info("Stackspot authenticated successfully: {}", token);
 
-            Task savedTask = TaskMapper.taskEntityToTask(savedTaskEntity);
+            String executionId = quickCommandService.executeCategoryQuickCommand(token, taskRequestDTO);
+            logger.info("Quick command executed successfully");
+
+            String category = quickCommandService.getQuickCommandCallback(token, executionId);
+
+            TaskEntity taskEntity = TaskMapper.taskRequestToTaskEntity(taskRequestDTO);
+            taskEntity.setCategory(category);
+            taskRepository.save(taskEntity);
+
+            Task savedTask = TaskMapper.taskEntityToTask(taskEntity);
 
             report.getTasks().add(savedTask);
 
@@ -182,4 +198,6 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskDeletionException("Error while deleting the task with ID: " + id + ". " + exception.getMessage(), exception);
         }
     }
+
+
 }
