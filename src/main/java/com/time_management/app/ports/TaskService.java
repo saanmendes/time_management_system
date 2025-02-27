@@ -14,4 +14,5 @@ public interface TaskService {
     List<TaskResponseDTO> getAllTasks();
     TaskResponseDTO updateTask(String id, TaskUpdateDTO taskUpdateDTO);
     void deleteTask(String id);
+    TaskResponseDTO updateTaskPendingStatus(String id, TaskUpdateDTO taskUpdateDTO);
 }
