@@ -1,5 +1,6 @@
 package com.time_management.app.dtos.reports;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.time_management.domain.models.Task;
 
 import java.time.LocalDateTime;
