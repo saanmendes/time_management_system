@@ -1,13 +1,31 @@
 package com.time_management.app.dtos.tasks;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDateTime;
 
 public class TaskUpdateDTO {
+    @NotNull(message = "email cannot be null")
+    @NotBlank(message = "email cannot be blank")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@zup\\.com\\.br$", message = "required format: {example}@zup.com.br")
     private String email;
+
+    @NotNull(message = "description cannot be null")
+    @NotBlank(message = "description cannot be blank")
     private String description;
+
+    @NotNull(message = "initial date is a required field")
     private LocalDateTime initialDate;
+
+    @NotNull(message = "end date is a required field")
     private LocalDateTime endDate;
+
+    @NotNull(message = "role cannot be null")
     private String role;
+
+    @NotNull(message = "task pending cannot be null")
     private boolean completed;
 
     public TaskUpdateDTO() {
