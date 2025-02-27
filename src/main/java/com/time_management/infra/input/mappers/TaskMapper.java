@@ -35,7 +35,7 @@ public class TaskMapper {
         task.setInitialDate(taskEntity.getInitialDate());
         task.setEndTime(taskEntity.getEndDate());
         task.setEmail(taskEntity.getEmail());
-        task.setPending(taskEntity.isCompleted());
+        task.setCompleted(taskEntity.isCompleted());
         return task;
     }
 
@@ -46,7 +46,7 @@ public class TaskMapper {
         taskEntity.setRole(taskRequestDTO.getRole());
         taskEntity.setInitialDate(taskRequestDTO.getInitialDate());
         taskEntity.setEndDate(taskRequestDTO.getEndDate());
-        taskEntity.setCompleted(taskRequestDTO.isPending());
+        taskEntity.setCompleted(taskRequestDTO.isCompleted());
         return taskEntity;
     }
 
@@ -55,7 +55,7 @@ public class TaskMapper {
                 task.getDescription(), task.getInitialDate(),
                 task.getEndTime(), task.getPriority(),
                 task.getRole(), task.getCategory(),
-                task.isPending());
+                task.isCompleted());
     }
 
     public static TaskResponseDTO taskEntityToTaskResponseDTO(TaskEntity taskEntity) {

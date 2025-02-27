@@ -12,7 +12,7 @@ public class Task {
     private String role;
     private String priority;
     private String category;
-    private boolean pending;
+    private boolean completed;
 
     public Task() {
         this.id = UUID.randomUUID().toString();
@@ -82,11 +82,11 @@ public class Task {
         this.category = category;
     }
 
-    public boolean isPending() {
-        return pending;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setPending(boolean pending) {
-        this.pending = pending;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

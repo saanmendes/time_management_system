@@ -20,7 +20,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -52,7 +51,7 @@ public class TaskServiceImpl implements TaskService {
                     savedTask.getInitialDate(),
                     savedTask.getEndTime(),
                     savedTask.getRole(),
-                    savedTask.isPending()
+                    savedTask.isCompleted()
             );
 
             logger.info("Task created successfully with ID: {}", savedTask.getId());
@@ -120,7 +119,7 @@ public class TaskServiceImpl implements TaskService {
                     updatedTask.getInitialDate(),
                     updatedTask.getEndTime(),
                     updatedTask.getRole(),
-                    updatedTask.isPending()
+                    updatedTask.isCompleted()
             );
 
             logger.info("Task updated successfully with ID: {}", updatedTask.getId());
