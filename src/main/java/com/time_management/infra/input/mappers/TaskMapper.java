@@ -51,18 +51,30 @@ public class TaskMapper {
     }
 
     public static TaskResponseDTO taskToTaskResponseDTO(Task task) {
-        return new TaskResponseDTO(task.getId(), task.getEmail(),
-                task.getDescription(), task.getInitialDate(),
-                task.getEndTime(), task.getPriority(),
-                task.getRole(), task.getCategory(),
-                task.isCompleted());
+        TaskResponseDTO taskResponseDTO = new TaskResponseDTO();
+        taskResponseDTO.setId(task.getId());
+        taskResponseDTO.setDescription(task.getDescription());
+        taskResponseDTO.setEmail(task.getEmail());
+        taskResponseDTO.setRole(task.getRole());
+        taskResponseDTO.setInitialDate(task.getInitialDate());
+        taskResponseDTO.setCategory(task.getCategory());
+        taskResponseDTO.setCompleted(task.isCompleted());
+        taskResponseDTO.setPriority(task.getPriority());
+        return taskResponseDTO;
     }
 
     public static TaskResponseDTO taskEntityToTaskResponseDTO(TaskEntity taskEntity) {
-        return new TaskResponseDTO(taskEntity.getId(),
-                taskEntity.getEmail(), taskEntity.getRole(),
-                taskEntity.getInitialDate(), taskEntity.getEndDate(),
-                taskEntity.getPriority(), taskEntity.isCompleted());
+        TaskResponseDTO taskResponseDTO = new TaskResponseDTO();
+        taskResponseDTO.setId(taskEntity.getId());
+        taskResponseDTO.setEmail(taskEntity.getEmail());
+        taskResponseDTO.setDescription(taskEntity.getDescription());
+        taskResponseDTO.setRole(taskEntity.getRole());
+        taskResponseDTO.setInitialDate(taskEntity.getInitialDate());
+        taskResponseDTO.setEndDate(taskEntity.getEndDate());
+        taskResponseDTO.setPriority(taskEntity.getPriority());
+        taskResponseDTO.setCategory(taskEntity.getCategory());
+        taskResponseDTO.setCompleted(taskEntity.isCompleted());
+        return taskResponseDTO;
     }
 
     public static TaskEntity taskUpdateToTaskEntity(TaskUpdateDTO taskUpdateDTO) {

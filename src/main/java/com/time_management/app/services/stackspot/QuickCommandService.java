@@ -36,23 +36,24 @@ public class QuickCommandService {
 
             // Corpo da requisição
             String jsonInput = String.format("{\"input_data\": \"%s\"}", taskRequestDTO);
-
             System.out.println(jsonInput);
 
             // Criar a entidade HTTP
             HttpEntity<String> requestEntity = new HttpEntity<>(jsonInput, headers);
 
             // Fazer a requisição POST
-            ResponseEntity<String> response = restTemplate.exchange(
-                    CATEGORY_URL,
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class
-            );
+            String response = restTemplate
+                    .postForObject
+                            (CATEGORY_URL,
+                            requestEntity,
+                            String.class);
 
-            // Usar JsonPath para extrair o valor desejado diretamente da resposta
-            String executeId = JsonPath.read(response.getBody(), "$.execution_id");
-            return executeId;
+            // Remover aspas da resposta, se existirem
+            if (response != null) {
+                response = response.replace("\"", ""); // Remove todas as aspas
+            }
+
+            return response;
         } catch (Exception e) {
             e.printStackTrace();
             return "An error occurred: " + e.getMessage();
@@ -77,7 +78,8 @@ public class QuickCommandService {
             );
 
             // Retornar a resposta
-            return response.getBody();
+
+            return JsonPath.read(response.getBody(), "$.result");
         } catch (Exception e) {
             e.printStackTrace();
             return "An error occurred: " + e.getMessage();

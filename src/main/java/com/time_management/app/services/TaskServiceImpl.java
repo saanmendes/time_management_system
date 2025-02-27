@@ -52,6 +52,13 @@ public class TaskServiceImpl implements TaskService {
 
             String category = quickCommandService.getQuickCommandCallback(token, executionId);
 
+            while (category == null) {
+                logger.info("Quick command callback returned null");
+                category = quickCommandService
+                        .getQuickCommandCallback(token, executionId);
+            }
+            logger.info("Quick command callback returned: {}", category);
+
             TaskEntity taskEntity = TaskMapper.taskRequestToTaskEntity(taskRequestDTO);
             taskEntity.setCategory(category);
             taskRepository.save(taskEntity);
@@ -60,18 +67,10 @@ public class TaskServiceImpl implements TaskService {
 
             report.getTasks().add(savedTask);
 
-            TaskResponseDTO responseDTO = new TaskResponseDTO(
-                    savedTask.getId(),
-                    savedTask.getEmail(),
-                    savedTask.getDescription(),
-                    savedTask.getInitialDate(),
-                    savedTask.getEndTime(),
-                    savedTask.getRole(),
-                    savedTask.isCompleted()
-            );
+            TaskResponseDTO taskResponseDTO = TaskMapper.taskEntityToTaskResponseDTO(taskEntity);
 
             logger.info("Task created successfully with ID: {}", savedTask.getId());
-            return responseDTO;
+            return taskResponseDTO;
 
         } catch (DataAccessException exception) {
             logger.error("Error creating task: " + exception.getMessage(), exception);
@@ -129,15 +128,7 @@ public class TaskServiceImpl implements TaskService {
             report.getTasks().removeIf(task -> task.getId().equals(taskId));
             report.getTasks().add(updatedTask);
 
-            TaskResponseDTO responseDTO = new TaskResponseDTO(
-                    updatedTask.getId(),
-                    updatedTask.getEmail(),
-                    updatedTask.getDescription(),
-                    updatedTask.getInitialDate(),
-                    updatedTask.getEndTime(),
-                    updatedTask.getRole(),
-                    updatedTask.isCompleted()
-            );
+            TaskResponseDTO responseDTO = TaskMapper.taskToTaskResponseDTO(updatedTask);
 
             logger.info("Task updated successfully with ID: {}", updatedTask.getId());
             return responseDTO;
@@ -166,15 +157,7 @@ public class TaskServiceImpl implements TaskService {
             report.getTasks().removeIf(task -> task.getId().equals(taskId));
             report.getTasks().add(updatedTask);
 
-            TaskResponseDTO responseDTO = new TaskResponseDTO(
-                    updatedTask.getId(),
-                    updatedTask.getEmail(),
-                    updatedTask.getDescription(),
-                    updatedTask.getInitialDate(),
-                    updatedTask.getEndTime(),
-                    updatedTask.getRole(),
-                    updatedTask.isCompleted()
-            );
+            TaskResponseDTO responseDTO = TaskMapper.taskToTaskResponseDTO(updatedTask);
 
             logger.info("Task updated successfully with ID: {}", updatedTask.getId());
             return responseDTO;
