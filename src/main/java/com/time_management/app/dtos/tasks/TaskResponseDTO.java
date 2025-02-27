@@ -13,28 +13,6 @@ public class TaskResponseDTO {
     private String category;
     private boolean completed;
 
-    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String role, boolean completed) {
-        this.id = id;
-        this.email = email;
-        this.description = description;
-        this.initialDate = initialDate;
-        this.endDate = endDate;
-        this.role = role;
-        this.completed = completed;
-    }
-
-    public TaskResponseDTO(String id, String email, String description, LocalDateTime initialDate, LocalDateTime endDate, String priority, String role, String category, boolean completed) {
-        this.id = id;
-        this.email = email;
-        this.description = description;
-        this.initialDate = initialDate;
-        this.endDate = endDate;
-        this.priority = priority;
-        this.role = role;
-        this.category = category;
-        this.completed = completed;
-    }
-
     public String getId() {
         return id;
     }
