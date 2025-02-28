@@ -1,7 +1,7 @@
 package com.time_management.app.dtos.reports;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.time_management.domain.models.Task;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +11,7 @@ public class ReportResponseDTO {
     private String id;
     private String description;
     private LocalDateTime issueDate;
-    private SuggestionDTO suggestion;
+    private String suggestion;
     private List<Task> tasks;
 
     public ReportResponseDTO() {
@@ -42,11 +42,11 @@ public class ReportResponseDTO {
         this.issueDate = issueDate;
     }
 
-    public SuggestionDTO getSuggestion() {
+    public String getSuggestion() {
         return suggestion;
     }
 
-    public void setSuggestion(SuggestionDTO suggestion) {
+    public void setSuggestion(String suggestion) {
         this.suggestion = suggestion;
     }
 

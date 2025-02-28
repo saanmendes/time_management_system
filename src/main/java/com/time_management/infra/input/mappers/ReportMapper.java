@@ -22,6 +22,7 @@ public class ReportMapper {
         reportEntity.setIssueDate(report.getIssueDate());
         reportEntity.setDescription(report.getDescription());
         reportEntity.setTaskEntities(TaskMapper.taskToTaskEntityList(report.getTasks()));
+        reportEntity.setSuggestion(report.getSuggestion());
         return reportEntity;
     }
 
@@ -30,6 +31,7 @@ public class ReportMapper {
         report.setId(reportEntity.getId());
         report.setIssueDate(reportEntity.getIssueDate());
         report.setDescription(reportEntity.getDescription());
+        report.setSuggestion(reportEntity.getSuggestion());
         return report;
     }
 
@@ -39,6 +41,7 @@ public class ReportMapper {
         reportResponseDTO.setIssueDate(report.getIssueDate());
         reportResponseDTO.setDescription(report.getDescription());
         reportResponseDTO.setTasks(report.getTasks());
+        reportResponseDTO.setSuggestion(report.getSuggestion());
         return reportResponseDTO;
     }
 }
