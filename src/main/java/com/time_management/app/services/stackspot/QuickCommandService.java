@@ -1,22 +1,24 @@
 package com.time_management.app.services.stackspot;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.JsonPath;
 import com.time_management.app.dtos.tasks.TaskRequestDTO;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import com.time_management.infra.output.entities.ReportEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class QuickCommandService {
 
     private static final String CALLBACK_URL = "https://genai-code-buddy-api.stackspot.com/v1/quick-commands/callback/";
     private static final String CATEGORY_URL = "https://genai-code-buddy-api.stackspot.com/v1/quick-commands/create-execution/task-prioritization-and-optimization";
+    private static final String OPTIMIZATION_URL = "https://genai-code-buddy-api.stackspot.com/v1/quick-commands/create-execution/suggest-optimization";
     private static final String AUTH_TOKEN = "Bearer ";
 
     private final RestTemplate restTemplate;
@@ -45,8 +47,8 @@ public class QuickCommandService {
             String response = restTemplate
                     .postForObject
                             (CATEGORY_URL,
-                            requestEntity,
-                            String.class);
+                                    requestEntity,
+                                    String.class);
 
             // Remover aspas da resposta, se existirem
             if (response != null) {
@@ -85,4 +87,5 @@ public class QuickCommandService {
             return "An error occurred: " + e.getMessage();
         }
     }
+
 }

@@ -9,7 +9,7 @@ public class Report {
     private String id;
     private String description;
     private LocalDateTime issueDate;
-    private Suggestion suggestion;
+    private String suggestion;
     private List<Task> tasks;
 
     public Report() {
@@ -41,11 +41,11 @@ public class Report {
         this.issueDate = issueDate;
     }
 
-    public Suggestion getSuggestion() {
+    public String getSuggestion() {
         return suggestion;
     }
 
-    public void setSuggestion(Suggestion suggestion) {
+    public void setSuggestion(String suggestion) {
         this.suggestion = suggestion;
     }
 

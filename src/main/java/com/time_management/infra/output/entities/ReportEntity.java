@@ -1,7 +1,7 @@
 package com.time_management.infra.output.entities;
 
-import com.time_management.domain.models.Suggestion;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "report")
+
 public class ReportEntity {
     @Id
     @UUID
@@ -22,14 +23,6 @@ public class ReportEntity {
 
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskEntity> taskEntities = new ArrayList<>();
-
-    public void setSuggestion(Suggestion suggestion) {
-        this.suggestion = suggestion.toString();
-    }
-
-    public Suggestion getSuggestion() {
-        return new Suggestion();
-    }
 
     public @UUID String getId() {
         return id;
@@ -53,6 +46,10 @@ public class ReportEntity {
 
     public void setIssueDate(LocalDateTime issueDate) {
         this.issueDate = issueDate;
+    }
+
+    public String getSuggestion() {
+        return suggestion;
     }
 
     public void setSuggestion(String suggestion) {
