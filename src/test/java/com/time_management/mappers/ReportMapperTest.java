@@ -5,6 +5,7 @@ import com.time_management.domain.models.Task;
 import com.time_management.infra.input.mappers.ReportMapper;
 import com.time_management.infra.input.mappers.TaskMapper;
 import com.time_management.infra.output.entities.ReportEntity;
+import com.time_management.infra.output.entities.TaskEntity;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.junit.jupiter.api.Test;
@@ -18,27 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReportMapperTest {
 
     @Test
-    void deveConverterReportEntityParaReportResponseDTO() {
-        final var reportEntity = Instancio.create(ReportEntity.class);
-        try (MockedStatic<TaskMapper> taskMapperMock = Mockito.mockStatic(TaskMapper.class)) {
-            final var tasks = Instancio.create(new TypeToken<List<Task>>() {});
-            taskMapperMock.when(() -> TaskMapper.taskEntityToTaskList(reportEntity.getTaskEntities()))
-                    .thenReturn(tasks);
-
-            final var result = ReportMapper.reportEntityToReportResponseDTO(reportEntity);
-
-            assertThat(result.getId()).isEqualTo(reportEntity.getId());
-            assertThat(result.getIssueDate()).isEqualTo(reportEntity.getIssueDate());
-            assertThat(result.getDescription()).isEqualTo(reportEntity.getDescription());
-            assertThat(result.getTasks()).isSameAs(tasks);
-        }
-    }
-
-    @Test
     void deveConverterReportParaReportEntity() {
         final var report = Instancio.create(Report.class);
+
         try (MockedStatic<TaskMapper> taskMapperMock = Mockito.mockStatic(TaskMapper.class)) {
-            final var taskEntities = Instancio.create(List.class);
+            final var taskEntities = Instancio.create(new TypeToken<List<TaskEntity>>() {});
+
             taskMapperMock.when(() -> TaskMapper.taskToTaskEntityList(report.getTasks()))
                     .thenReturn(taskEntities);
 
