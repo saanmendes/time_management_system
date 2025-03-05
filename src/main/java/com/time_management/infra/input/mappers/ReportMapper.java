@@ -12,6 +12,7 @@ public class ReportMapper {
         reportResponseDTO.setId(reportEntity.getId());
         reportResponseDTO.setIssueDate(reportEntity.getIssueDate());
         reportResponseDTO.setDescription(reportEntity.getDescription());
+        reportResponseDTO.setSuggestion(reportEntity.getSuggestion());
         reportResponseDTO.setTasks(TaskMapper.taskEntityToTaskList(reportEntity.getTaskEntities()));
         return reportResponseDTO;
     }
