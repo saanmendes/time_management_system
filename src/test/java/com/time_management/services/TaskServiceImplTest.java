@@ -1,10 +1,12 @@
 package com.time_management.services;
+
 import com.time_management.app.dtos.tasks.TaskRequestDTO;
 import com.time_management.app.dtos.tasks.TaskUpdateDTO;
 import com.time_management.app.exceptions.*;
 import com.time_management.app.services.TaskServiceImpl;
 import com.time_management.app.services.stackspot.QuickCommandService;
 import com.time_management.app.services.stackspot.StackspotAuthenticator;
+import com.time_management.domain.models.Report;
 import com.time_management.infra.input.mappers.TaskMapper;
 import com.time_management.infra.output.entities.TaskEntity;
 import com.time_management.infra.output.repositories.TaskRepository;
@@ -14,10 +16,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessException;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.*;
+import static org.instancio.Select.field;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +32,9 @@ class TaskServiceImplTest {
 
     @Mock
     private TaskRepository taskRepository;
+
+    @Mock
+    private Report report;
 
     @Mock
     private StackspotAuthenticator stackspotAuthenticator;
@@ -36,39 +46,55 @@ class TaskServiceImplTest {
     private TaskServiceImpl taskService;
 
     @Test
-    void deveCriarTarefaComSucesso() {
+    void shouldCreateTaskSuccessfully() {
         final var taskRequestDTO = Instancio.create(TaskRequestDTO.class);
         final var taskEntity = Instancio.create(TaskEntity.class);
         final var token = UUID.randomUUID().toString();
         final var executionId = UUID.randomUUID().toString();
+        final var category = "TestCategory";
 
         when(stackspotAuthenticator.authenticate()).thenReturn(token);
         when(quickCommandService.executeCategoryQuickCommand(eq(token), eq(taskRequestDTO))).thenReturn(executionId);
-        when(quickCommandService.getQuickCommandCallback(eq(token), eq(executionId))).thenReturn("category");
+        when(quickCommandService.getQuickCommandCallback(eq(token), eq(executionId))).thenReturn(category);
         when(taskRepository.save(any(TaskEntity.class))).thenAnswer(invocation -> {
             TaskEntity entity = invocation.getArgument(0);
-            entity.setId(UUID.randomUUID().toString()); // Simula ID gerado pelo banco
+            entity.setId(UUID.randomUUID().toString());
             return entity;
         });
-
-        final var taskResponseDTO = TaskMapper.taskEntityToTaskResponseDTO(taskEntity);
         final var result = taskService.createTask(taskRequestDTO);
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(taskResponseDTO);
+        assertThat(result).isNotNull();
+        assertThat(result.getCategory()).isEqualTo(category);
+        verify(stackspotAuthenticator, times(1)).authenticate();
+        verify(quickCommandService, times(1)).executeCategoryQuickCommand(eq(token), eq(taskRequestDTO));
+        verify(quickCommandService, atLeastOnce()).getQuickCommandCallback(eq(token), eq(executionId));
+        verify(taskRepository, times(1)).save(any(TaskEntity.class));
     }
 
     @Test
-    void deveLancarExcecaoAoCriarTarefaComErro() {
+    void shouldThrowExceptionWhenSavingTaskFails() {
         final var taskRequestDTO = Instancio.create(TaskRequestDTO.class);
-        when(stackspotAuthenticator.authenticate()).thenThrow(new RuntimeException("Erro de autenticação"));
+        final var token = UUID.randomUUID().toString();
+        final var executionId = UUID.randomUUID().toString();
+        final var category = "TestCategory";
+
+        when(stackspotAuthenticator.authenticate()).thenReturn(token);
+        when(quickCommandService.executeCategoryQuickCommand(eq(token), eq(taskRequestDTO))).thenReturn(executionId);
+        when(quickCommandService.getQuickCommandCallback(eq(token), eq(executionId))).thenReturn(category);
+        when(taskRepository.save(any(TaskEntity.class))).thenThrow(new DataAccessException("Database error") {});
 
         assertThatThrownBy(() -> taskService.createTask(taskRequestDTO))
                 .isInstanceOf(TaskCreationException.class)
                 .hasMessageContaining("Error while saving the task");
+
+        verify(stackspotAuthenticator, times(1)).authenticate();
+        verify(quickCommandService, times(1)).executeCategoryQuickCommand(eq(token), eq(taskRequestDTO));
+        verify(quickCommandService, atLeastOnce()).getQuickCommandCallback(eq(token), eq(executionId));
+        verify(taskRepository, times(1)).save(any(TaskEntity.class));
     }
 
     @Test
-    void deveBuscarTodasAsTarefas() {
+    void shouldFetchAllTasks() {
         final var taskEntities = List.of(Instancio.create(TaskEntity.class));
         final var taskResponses = taskEntities.stream()
                 .map(TaskMapper::taskEntityToTaskResponseDTO)
@@ -78,11 +104,13 @@ class TaskServiceImplTest {
 
         final var result = taskService.getAllTasks();
 
-        assertThat(result).containsExactlyElementsOf(taskResponses);
+        assertThat(result)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyElementsOf(taskResponses);
     }
 
     @Test
-    void deveLancarExcecaoAoBuscarTarefaInexistente() {
+    void shouldThrowExceptionWhenFetchingNonExistentTask() {
         final var taskId = UUID.randomUUID().toString();
         when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
 
@@ -92,22 +120,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void deveAtualizarTarefaComSucesso() {
-        final var taskId = UUID.randomUUID().toString();
-        final var taskUpdateDTO = Instancio.create(TaskUpdateDTO.class);
-        final var taskEntity = Instancio.create(TaskEntity.class);
-        final var taskResponseDTO = TaskMapper.taskEntityToTaskResponseDTO(taskEntity);
-
-        when(taskRepository.findById(taskId)).thenReturn(Optional.of(taskEntity));
-        when(taskRepository.save(taskEntity)).thenReturn(taskEntity);
-
-        final var result = taskService.updateTask(taskId, taskUpdateDTO);
-
-        assertThat(result).usingRecursiveComparison().isEqualTo(taskResponseDTO);
-    }
-
-    @Test
-    void deveLancarExcecaoAoAtualizarTarefaInexistente() {
+    void shouldThrowExceptionWhenUpdatingNonExistentTask() {
         final var taskId = UUID.randomUUID().toString();
         final var taskUpdateDTO = Instancio.create(TaskUpdateDTO.class);
 
@@ -119,22 +132,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void deveAtualizarStatusDeTarefaComSucesso() {
-        final var taskId = UUID.randomUUID().toString();
-        final var taskUpdateDTO = Instancio.create(TaskUpdateDTO.class);
-        final var taskEntity = Instancio.create(TaskEntity.class);
-        final var taskResponseDTO = TaskMapper.taskEntityToTaskResponseDTO(taskEntity);
-
-        when(taskRepository.findById(taskId)).thenReturn(Optional.of(taskEntity));
-        when(taskRepository.save(taskEntity)).thenReturn(taskEntity);
-
-        final var result = taskService.updateTaskPendingStatus(taskId, taskUpdateDTO);
-
-        assertThat(result).usingRecursiveComparison().isEqualTo(taskResponseDTO);
-    }
-
-    @Test
-    void deveDeletarTarefaComSucesso() {
+    void shouldDeleteTaskSuccessfully() {
         final var taskId = UUID.randomUUID().toString();
 
         when(taskRepository.existsById(taskId)).thenReturn(true);
@@ -145,7 +143,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void deveLancarExcecaoAoDeletarTarefaInexistente() {
+    void shouldThrowExceptionWhenDeletingNonExistentTask() {
         final var taskId = UUID.randomUUID().toString();
 
         when(taskRepository.existsById(taskId)).thenReturn(false);

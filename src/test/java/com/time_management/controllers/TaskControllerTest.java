@@ -30,7 +30,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void deveCriarTaskComSucesso() {
+    void shouldCreateTaskSuccessfully() {
         final var taskRequestDTO = Instancio.create(TaskRequestDTO.class);
         final var taskResponseDTO = Instancio.create(TaskResponseDTO.class);
         when(taskService.createTask(taskRequestDTO)).thenReturn(taskResponseDTO);
@@ -43,7 +43,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void deveRetornarTaskPorId() {
+    void shouldReturnTaskById() {
         final var taskId = "123";
         final var taskResponseDTO = Instancio.create(TaskResponseDTO.class);
         when(taskService.getTaskById(taskId)).thenReturn(taskResponseDTO);
@@ -56,7 +56,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void deveAtualizarTaskComSucesso() {
+    void shouldUpdateTaskSuccessfully() {
         final var taskId = "123";
         final var taskUpdateDTO = Instancio.create(TaskUpdateDTO.class);
         final var taskResponseDTO = Instancio.create(TaskResponseDTO.class);
@@ -70,7 +70,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void deveAtualizarStatusPendingDaTask() {
+    void shouldUpdateTaskPendingStatus() {
         final var taskId = "123";
         final var taskUpdateDTO = Instancio.create(TaskUpdateDTO.class);
         final var taskResponseDTO = Instancio.create(TaskResponseDTO.class);
@@ -84,7 +84,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void deveDeletarTaskComSucesso() {
+    void shouldDeleteTaskSuccessfully() {
         final var taskId = "123";
         doNothing().when(taskService).deleteTask(taskId);
 
@@ -95,7 +95,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoTaskNaoForEncontrada() {
+    void shouldThrowExceptionWhenTaskNotFound() {
         final var taskId = "123";
         doThrow(new TaskNotFoundException("Task not found")).when(taskService).getTaskById(taskId);
 

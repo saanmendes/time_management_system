@@ -71,4 +71,5 @@ public class TaskUpdateDTO {
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
+
 }

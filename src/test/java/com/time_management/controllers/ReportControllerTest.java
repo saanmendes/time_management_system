@@ -27,7 +27,7 @@ class ReportControllerTest {
     }
 
     @Test
-    void deveGerarRelatorioDeProdutividadeComSucesso() {
+    void shouldGenerateProductivityReportSuccessfully()  {
         final var days = 7;
         final var reportResponseDTO = Instancio.create(ReportResponseDTO.class);
 

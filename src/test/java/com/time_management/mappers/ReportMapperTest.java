@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReportMapperTest {
 
     @Test
-    void deveConverterReportParaReportEntity() {
+    void shouldConvertReportToReportEntity() {
         final var report = Instancio.create(Report.class);
 
         try (MockedStatic<TaskMapper> taskMapperMock = Mockito.mockStatic(TaskMapper.class)) {
@@ -39,7 +39,7 @@ class ReportMapperTest {
     }
 
     @Test
-    void deveConverterReportEntityParaReport() {
+    void shouldConvertReportEntityToReport() {
         final var reportEntity = Instancio.create(ReportEntity.class);
 
         final var result = ReportMapper.reportEntityToReport(reportEntity);
@@ -51,7 +51,7 @@ class ReportMapperTest {
     }
 
     @Test
-    void deveConverterReportParaReportResponseDTO() {
+    void shouldConvertReportToReportResponseDTO() {
         final var report = Instancio.create(Report.class);
 
         final var result = ReportMapper.reportToReportResponseDTO(report);
