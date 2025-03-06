@@ -47,20 +47,33 @@ public class TaskServiceImpl implements TaskService {
             String token = stackspotAuthenticator.authenticate();
             logger.info("Stackspot authenticated successfully: {}", token);
 
-            String executionId = quickCommandService.executeCategoryQuickCommand(token, taskRequestDTO);
+            String categoryExecutionId = quickCommandService.executeCategoryQuickCommand(token, taskRequestDTO);
             logger.info("Quick command executed successfully");
 
-            String category = quickCommandService.getQuickCommandCallback(token, executionId);
+            String priorityExecutionId = quickCommandService.executePriorizationQuickCommand(token, taskRequestDTO);
+
+            String category = quickCommandService.getQuickCommandCategoryCallback(token, categoryExecutionId);
+
+            String priority = quickCommandService.getQuickCommandPriorityCallback(token, priorityExecutionId);
 
             while (category == null) {
                 logger.info("Quick command callback returned null");
                 category = quickCommandService
-                        .getQuickCommandCallback(token, executionId);
+                        .getQuickCommandCategoryCallback(token, categoryExecutionId);
             }
             logger.info("Quick command callback returned: {}", category);
 
+            while (priority == null) {
+                logger.info("Quick command priority callback returned null");
+                priority = quickCommandService
+                        .getQuickCommandPriorityCallback(token, priorityExecutionId);
+            }
+            logger.info("Quick command priority callback returned: {}", priority);
+
             TaskEntity taskEntity = TaskMapper.taskRequestToTaskEntity(taskRequestDTO);
             taskEntity.setCategory(category);
+            taskEntity.setPriority(priority);
+
             taskRepository.save(taskEntity);
 
             Task savedTask = TaskMapper.taskEntityToTask(taskEntity);
