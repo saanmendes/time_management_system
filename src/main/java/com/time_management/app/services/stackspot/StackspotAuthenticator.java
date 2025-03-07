@@ -7,9 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Component
 public class StackspotAuthenticator {
 
@@ -26,27 +23,22 @@ public class StackspotAuthenticator {
 
     public String authenticate() {
         try {
-            // Configurar os headers
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            // Configurar o corpo da requisição
             String requestBody = String.format(
                     "client_id=%s&grant_type=%s&client_secret=%s",
                     CLIENT_ID, GRANT_TYPE, CLIENT_SECRET
             );
 
-            // Criar a entidade HTTP
             HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
 
-            // Fazer a requisição POST
             String response = restTemplate.postForObject(TOKEN_URL, request, String.class);
 
-            // Usar JsonPath para extrair o token
             return JsonPath.parse(response).read("$.access_token", String.class);
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao autenticar no StackSpot", e);
+            throw new RuntimeException("Stackspot authenticator error", e);
         }
     }
 }

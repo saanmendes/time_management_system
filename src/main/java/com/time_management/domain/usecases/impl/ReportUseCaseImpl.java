@@ -24,18 +24,28 @@ public class ReportUseCaseImpl implements ReportUseCase {
     @Override
     public Report generateReport(int days) {
         try {
-            LocalDateTime startDate = LocalDateTime.now().minusDays(days);
-            List<Task> tasks = TaskMapper.taskEntityToTaskList(taskRepository.findByInitialDateGreaterThanEqual(startDate));
-
-            Report report = new Report();
-            report.setDescription("Productivity report for the last " + days + " days");
-            report.setIssueDate(LocalDateTime.now());
-            report.setTasks(tasks);
-
-            return report;
+            List<Task> tasks = fetchTasksFromLastDays(days);
+            return buildReport(days, tasks);
         } catch (Exception exception) {
-            logger.error("Error generating report for {} days: " + exception.getMessage(), days, exception);
+            logError(days, exception);
             throw exception;
         }
+    }
+
+    private List<Task> fetchTasksFromLastDays(int days) {
+        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
+        return TaskMapper.taskEntityToTaskList(taskRepository.findByInitialDateGreaterThanEqual(startDate));
+    }
+
+    private Report buildReport(int days, List<Task> tasks) {
+        Report report = new Report();
+        report.setDescription(String.format("Productivity report for the last %d days", days));
+        report.setIssueDate(LocalDateTime.now());
+        report.setTasks(tasks);
+        return report;
+    }
+
+    private void logError(int days, Exception exception) {
+        logger.error("Error generating report for {} days: {}", days, exception.getMessage(), exception);
     }
 }

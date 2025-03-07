@@ -1,7 +1,6 @@
 package com.time_management.app.dtos.reports;
 
 import com.time_management.domain.models.Task;
-import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
