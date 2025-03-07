@@ -1,7 +1,6 @@
 package com.time_management.infra.output.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
@@ -10,7 +9,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "report")
-
 public class ReportEntity {
     @Id
     @UUID

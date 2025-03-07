@@ -3,9 +3,7 @@ package com.time_management.infra.input.controllers;
 import com.time_management.app.dtos.tasks.TaskRequestDTO;
 import com.time_management.app.dtos.tasks.TaskResponseDTO;
 import com.time_management.app.dtos.tasks.TaskUpdateDTO;
-import com.time_management.app.exceptions.TaskNotFoundException;
 import com.time_management.app.ports.TaskService;
-import com.time_management.domain.models.Task;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,13 +38,15 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable String id, @Valid @RequestBody TaskUpdateDTO taskUpdateDTO) {
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable String id,
+                                                      @Valid @RequestBody TaskUpdateDTO taskUpdateDTO) {
         TaskResponseDTO updatedTask = taskService.updateTask(id, taskUpdateDTO);
         return ResponseEntity.ok(updatedTask);
     }
 
     @PatchMapping("/{id}/pending")
-    public ResponseEntity<?> updateTaskPending(@PathVariable String id, @Valid @RequestBody TaskUpdateDTO taskUpdateDTO) {
+    public ResponseEntity<?> updateTaskPending(@PathVariable String id,
+                                               @Valid @RequestBody TaskUpdateDTO taskUpdateDTO) {
         TaskResponseDTO responseDTO = taskService.updateTaskPendingStatus(id, taskUpdateDTO);
         return ResponseEntity.ok(responseDTO);
     }

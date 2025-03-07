@@ -1,17 +1,14 @@
 package com.time_management.app.services.stackspot;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.JsonPath;
 import com.time_management.app.dtos.tasks.TaskRequestDTO;
-import com.time_management.infra.output.entities.ReportEntity;
 import com.time_management.infra.output.entities.TaskEntity;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,176 +27,53 @@ public class QuickCommandService {
     public QuickCommandService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.objectMapper.registerModule(new JavaTimeModule());
     }
 
     public String executeCategoryQuickCommand(String accessToken, TaskRequestDTO taskRequestDTO) {
-        try {
-            // Configurar os cabeçalhos
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", AUTH_TOKEN + accessToken);
-            headers.set("Content-Type", "application/json");
-
-            // Corpo da requisição
-            String jsonInput = String.format("{\"input_data\": \"%s\"}", taskRequestDTO);
-            System.out.println(jsonInput);
-
-            // Criar a entidade HTTP
-            HttpEntity<String> requestEntity = new HttpEntity<>(jsonInput, headers);
-
-            // Fazer a requisição POST
-            String response = restTemplate
-                    .postForObject
-                            (CATEGORY_URL,
-                                    requestEntity,
-                                    String.class);
-
-            // Remover aspas da resposta, se existirem
-            if (response != null) {
-                response = response.replace("\"", ""); // Remove todas as aspas
-            }
-
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "An error occurred: " + e.getMessage();
-        }
+        return executePostRequest(CATEGORY_URL, accessToken, Map.of("input_data", taskRequestDTO));
     }
 
-    public String executePriorizationQuickCommand(String accessToken, TaskRequestDTO taskRequestDTO) {
-        try {
-            // Configurar os cabeçalhos
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", AUTH_TOKEN + accessToken);
-            headers.set("Content-Type", "application/json");
-
-            // Serializar o objeto TaskRequestDTO para JSON
-            String jsonInput = objectMapper.writeValueAsString(taskRequestDTO);
-
-            // Criar a entidade HTTP
-            HttpEntity<String> requestEntity = new HttpEntity<>(jsonInput, headers);
-
-            // Fazer a requisição POST
-            String response = restTemplate
-                    .postForObject(PRIORITY_URL,
-                            requestEntity,
-                            String.class);
-
-            // Remover aspas da resposta, se existirem
-            if (response != null) {
-                response = response.replace("\"", ""); // Remove todas as aspas
-            }
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "An error occurred: " + e.getMessage();
-        }
+    public String executePriorityQuickCommand(String accessToken, TaskRequestDTO taskRequestDTO) {
+        return executePostRequest(PRIORITY_URL, accessToken, taskRequestDTO);
     }
 
     public String executeOptimizationQuickCommand(String accessToken, List<TaskEntity> taskEntities) {
-        try {
-            // Configurar os cabeçalhos
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", AUTH_TOKEN + accessToken);
-            headers.set("Content-Type", "application/json");
-
-            // Encapsular os dados no formato esperado pela API
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule()); // Para lidar com datas
-            String jsonInput = mapper.writeValueAsString(
-                    Map.of("input_data", Map.of("tasks", taskEntities))
-            );
-
-            // Criar a entidade HTTP
-            HttpEntity<String> requestEntity = new HttpEntity<>(jsonInput, headers);
-
-            // Fazer a requisição POST
-            String response = restTemplate.postForObject(OPTIMIZATION_URL, requestEntity, String.class);
-
-            // Remover aspas da resposta, se existirem
-            if (response != null) {
-                response = response.replace("\"", ""); // Remove todas as aspas
-            }
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "An error occurred: " + e.getMessage();
-        }
+        return executePostRequest(OPTIMIZATION_URL, accessToken, Map.of("input_data", Map.of("tasks", taskEntities)));
     }
-
-
 
     public String getQuickCommandCategoryCallback(String accessToken, String executionId) {
-        try {
-            // Configurar os cabeçalhos
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", AUTH_TOKEN + accessToken);
-
-            // Criar a entidade HTTP
-            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-
-            // Fazer a requisição GET
-            ResponseEntity<String> response = restTemplate.exchange(
-                    CALLBACK_URL + executionId,
-                    HttpMethod.GET,
-                    requestEntity,
-                    String.class
-            );
-
-            // Retornar a resposta
-
-            return JsonPath.read(response.getBody(), "$.result");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "An error occurred: " + e.getMessage();
-        }
+        return executeGetRequest(CALLBACK_URL + executionId, accessToken);
     }
 
-
     public String getQuickCommandPriorityCallback(String accessToken, String executionId) {
-        try {
-            // Configurar os cabeçalhos
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", AUTH_TOKEN + accessToken);
-
-            // Criar a entidade HTTP
-            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-
-            // Fazer a requisição GET
-            ResponseEntity<String> response = restTemplate.exchange(
-                    CALLBACK_URL + executionId,
-                    HttpMethod.GET,
-                    requestEntity,
-                    String.class
-            );
-
-            // Retornar a resposta
-
-            return JsonPath.read(response.getBody(), "$.result");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "An error occurred: " + e.getMessage();
-        }
+        return executeGetRequest(CALLBACK_URL + executionId, accessToken);
     }
 
     public String getQuickCommandOptimizationCallback(String accessToken, String executionId) {
-        try {
-            // Configurar os cabeçalhos
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", AUTH_TOKEN + accessToken);
+        return executeGetRequest(CALLBACK_URL + executionId, accessToken);
+    }
 
-            // Criar a entidade HTTP
+    private String executePostRequest(String url, String accessToken, Object body) {
+        try {
+            HttpHeaders headers = createHeaders(accessToken);
+            String jsonInput = objectMapper.writeValueAsString(body);
+            HttpEntity<String> requestEntity = new HttpEntity<>(jsonInput, headers);
+
+            String response = restTemplate.postForObject(url, requestEntity, String.class);
+            return cleanResponse(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "An error occurred: " + e.getMessage();
+        }
+    }
+
+    private String executeGetRequest(String url, String accessToken) {
+        try {
+            HttpHeaders headers = createHeaders(accessToken);
             HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-            // Fazer a requisição GET
-            ResponseEntity<String> response = restTemplate.exchange(
-                    CALLBACK_URL + executionId,
-                    HttpMethod.GET,
-                    requestEntity,
-                    String.class
-            );
-
-            // Retornar a resposta
-
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
             return JsonPath.read(response.getBody(), "$.result");
         } catch (Exception e) {
             e.printStackTrace();
@@ -207,4 +81,14 @@ public class QuickCommandService {
         }
     }
 
+    private HttpHeaders createHeaders(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", AUTH_TOKEN + accessToken);
+        headers.set("Content-Type", "application/json");
+        return headers;
+    }
+
+    private String cleanResponse(String response) {
+        return response != null ? response.replace("\"", "") : null;
+    }
 }
