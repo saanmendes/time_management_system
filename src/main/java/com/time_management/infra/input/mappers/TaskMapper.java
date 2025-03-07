@@ -19,7 +19,7 @@ public class TaskMapper {
         taskEntity.setCategory(task.getCategory());
         taskEntity.setRole(task.getRole());
         taskEntity.setInitialDate(task.getInitialDate());
-        taskEntity.setEndDate(task.getEndTime());
+        taskEntity.setEndDate(task.getEndDate());
         taskEntity.setEmail(task.getEmail());
         taskEntity.setCompleted(taskEntity.isCompleted());
         return taskEntity;
@@ -33,7 +33,7 @@ public class TaskMapper {
         task.setCategory(taskEntity.getCategory());
         task.setRole(taskEntity.getRole());
         task.setInitialDate(taskEntity.getInitialDate());
-        task.setEndTime(taskEntity.getEndDate());
+        task.setEndDate(taskEntity.getEndDate());
         task.setEmail(taskEntity.getEmail());
         task.setCompleted(taskEntity.isCompleted());
         return task;

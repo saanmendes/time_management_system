@@ -7,7 +7,7 @@ public class Task {
     private String id;
     private String email;
     private LocalDateTime initialDate;
-    private LocalDateTime endTime;
+    private LocalDateTime endDate;
     private String description;
     private String role;
     private String priority;
@@ -42,12 +42,12 @@ public class Task {
         this.initialDate = initialDate;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public LocalDateTime getEndDate() {
+        return endDate;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
     }
 
     public String getDescription() {
